@@ -54,7 +54,7 @@ export default function Pricing() {
           </div>
           <h1 className="text-3xl sm:text-4xl font-black tracking-tight uppercase">Buy Credits Packs</h1>
           <p className="text-xs sm:text-sm text-secondary-text max-w-lg leading-relaxed">
-            Purchase flexible credit packages to perform high-resolution predictions. Keep all profits — we handle AI infrastructure.
+            Purchase flexible credit packages to perform high-resolution predictions. Keep all profits â€” we handle AI infrastructure.
           </p>
         </div>
 
