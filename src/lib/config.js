@@ -1,4 +1,4 @@
-// Configuración global de la aplicación
+// ConfiguraciÃ³n global de la aplicaciÃ³n
 const config = {
   appName: 'PrimeScheduler',
   apiBase: process.env.NEXT_PUBLIC_API_BASE || '/api',

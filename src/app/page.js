@@ -143,7 +143,7 @@ export default function Home() {
       firstDate.getTime() <= Date.now()
     ) {
       setError(
-        "La primera publicación debe estar en el futuro."
+        "La primera publicaciÃ³n debe estar en el futuro."
       );
       return;
     }
@@ -271,7 +271,7 @@ export default function Home() {
           </h1>
 
           <p>
-            Selecciona tus 30–50 Shorts,
+            Selecciona tus 30â€“50 Shorts,
             elige la hora inicial y deja que
             PrimeScheduler haga el resto.
           </p>
@@ -313,7 +313,7 @@ export default function Home() {
             </strong>
 
             <span>
-              MP4 / MOV · Selección múltiple
+              MP4 / MOV Â· SelecciÃ³n mÃºltiple
             </span>
           </label>
 
@@ -382,7 +382,7 @@ export default function Home() {
                         removeFile(index)
                       }
                     >
-                      ×
+                      Ã—
                     </button>
                   </div>
                 </div>
@@ -395,9 +395,9 @@ export default function Home() {
           <div className="panel-title">
             <span>02</span>
             <div>
-              <h2>Configuración</h2>
+              <h2>ConfiguraciÃ³n</h2>
               <p>
-                Define cuándo quieres que
+                Define cuÃ¡ndo quieres que
                 aparezcan.
               </p>
             </div>
@@ -416,7 +416,7 @@ export default function Home() {
             </label>
 
             <label>
-              <span>Primera publicación</span>
+              <span>Primera publicaciÃ³n</span>
               <input
                 type="time"
                 value={time}
@@ -453,11 +453,11 @@ export default function Home() {
 
           <label className="full-field">
             <span>
-              Descripción global
+              DescripciÃ³n global
             </span>
 
             <textarea
-              placeholder="Descripción que tendrán tus Shorts..."
+              placeholder="DescripciÃ³n que tendrÃ¡n tus Shorts..."
               value={description}
               onChange={(e) =>
                 setDescription(
@@ -469,7 +469,7 @@ export default function Home() {
 
           <div className="form-grid">
             <label>
-              <span>Categoría</span>
+              <span>CategorÃ­a</span>
               <select
                 value={categoryId}
                 onChange={(e) =>
@@ -508,7 +508,7 @@ export default function Home() {
               />
 
               <span>
-                Contenido creado para niños
+                Contenido creado para niÃ±os
               </span>
             </label>
           </div>
@@ -520,8 +520,8 @@ export default function Home() {
             <div>
               <h2>Vista previa</h2>
               <p>
-                Así quedará tu cola de
-                publicación.
+                AsÃ­ quedarÃ¡ tu cola de
+                publicaciÃ³n.
               </p>
             </div>
           </div>
@@ -529,7 +529,7 @@ export default function Home() {
           {schedule.length === 0 ? (
             <div className="empty">
               Selecciona tus Shorts para
-              generar la programación.
+              generar la programaciÃ³n.
             </div>
           ) : (
             <>
@@ -565,7 +565,7 @@ export default function Home() {
                       ].date
                     )}
                   </strong>
-                  <span>último</span>
+                  <span>Ãºltimo</span>
                 </div>
               </div>
 
@@ -672,12 +672,12 @@ export default function Home() {
               <strong>
                 {files.length
                   ? `${files.length} Shorts listos`
-                  : "Ningún Short seleccionado"}
+                  : "NingÃºn Short seleccionado"}
               </strong>
 
               <span>
-                Cada video se subirá y quedará
-                programado automáticamente.
+                Cada video se subirÃ¡ y quedarÃ¡
+                programado automÃ¡ticamente.
               </span>
             </>
           )}
