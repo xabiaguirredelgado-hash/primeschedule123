@@ -19,3 +19,4 @@ export async function refreshAccessToken(refreshToken) {
     expires_at: credentials.expiry_date ? Math.floor(credentials.expiry_date / 1000) : null,
   };
 }
+

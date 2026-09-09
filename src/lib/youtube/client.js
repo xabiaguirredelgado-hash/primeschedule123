@@ -1,4 +1,4 @@
-﻿// src/lib/youtube/client.js
+// src/lib/youtube/client.js
 import { google } from "googleapis";
 import { createReadStream } from "fs";
 import { randomBytes } from "crypto";
@@ -97,3 +97,5 @@ export async function uploadVideoToYouTube({
 
   return response.data.id;
 }
+
+

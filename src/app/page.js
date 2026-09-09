@@ -1,4 +1,4 @@
-ï»¿"use client";
+"use client";
 
 import { useEffect, useMemo, useState } from "react";
 
@@ -143,7 +143,7 @@ export default function Home() {
       firstDate.getTime() <= Date.now()
     ) {
       setError(
-        "La primera publicaciÃ³n debe estar en el futuro."
+        "La primera publicación debe estar en el futuro."
       );
       return;
     }
@@ -271,7 +271,7 @@ export default function Home() {
           </h1>
 
           <p>
-            Selecciona tus 30â€“50 Shorts,
+            Selecciona tus 30–50 Shorts,
             elige la hora inicial y deja que
             PrimeScheduler haga el resto.
           </p>
@@ -305,7 +305,7 @@ export default function Home() {
             />
 
             <div className="upload-icon">
-              â†‘
+              ?
             </div>
 
             <strong>
@@ -313,7 +313,7 @@ export default function Home() {
             </strong>
 
             <span>
-              MP4 / MOV Â· SelecciÃ³n mÃºltiple
+              MP4 / MOV · Selección múltiple
             </span>
           </label>
 
@@ -362,7 +362,7 @@ export default function Home() {
                         index === 0
                       }
                     >
-                      â†‘
+                      ?
                     </button>
 
                     <button
@@ -374,7 +374,7 @@ export default function Home() {
                         files.length - 1
                       }
                     >
-                      â†“
+                      ?
                     </button>
 
                     <button
@@ -382,7 +382,7 @@ export default function Home() {
                         removeFile(index)
                       }
                     >
-                      Ã—
+                      ×
                     </button>
                   </div>
                 </div>
@@ -395,9 +395,9 @@ export default function Home() {
           <div className="panel-title">
             <span>02</span>
             <div>
-              <h2>ConfiguraciÃ³n</h2>
+              <h2>Configuración</h2>
               <p>
-                Define cuÃ¡ndo quieres que
+                Define cuándo quieres que
                 aparezcan.
               </p>
             </div>
@@ -416,7 +416,7 @@ export default function Home() {
             </label>
 
             <label>
-              <span>Primera publicaciÃ³n</span>
+              <span>Primera publicación</span>
               <input
                 type="time"
                 value={time}
@@ -453,11 +453,11 @@ export default function Home() {
 
           <label className="full-field">
             <span>
-              DescripciÃ³n global
+              Descripción global
             </span>
 
             <textarea
-              placeholder="DescripciÃ³n que tendrÃ¡n tus Shorts..."
+              placeholder="Descripción que tendrán tus Shorts..."
               value={description}
               onChange={(e) =>
                 setDescription(
@@ -469,7 +469,7 @@ export default function Home() {
 
           <div className="form-grid">
             <label>
-              <span>CategorÃ­a</span>
+              <span>Categoría</span>
               <select
                 value={categoryId}
                 onChange={(e) =>
@@ -508,7 +508,7 @@ export default function Home() {
               />
 
               <span>
-                Contenido creado para niÃ±os
+                Contenido creado para niños
               </span>
             </label>
           </div>
@@ -520,8 +520,8 @@ export default function Home() {
             <div>
               <h2>Vista previa</h2>
               <p>
-                AsÃ­ quedarÃ¡ tu cola de
-                publicaciÃ³n.
+                Así quedará tu cola de
+                publicación.
               </p>
             </div>
           </div>
@@ -529,7 +529,7 @@ export default function Home() {
           {schedule.length === 0 ? (
             <div className="empty">
               Selecciona tus Shorts para
-              generar la programaciÃ³n.
+              generar la programación.
             </div>
           ) : (
             <>
@@ -565,7 +565,7 @@ export default function Home() {
                       ].date
                     )}
                   </strong>
-                  <span>Ãºltimo</span>
+                  <span>último</span>
                 </div>
               </div>
 
@@ -621,7 +621,7 @@ export default function Home() {
             >
               <span>
                 {result.success
-                  ? "âœ“"
+                  ? "?"
                   : "!"}
               </span>
 
@@ -672,12 +672,12 @@ export default function Home() {
               <strong>
                 {files.length
                   ? `${files.length} Shorts listos`
-                  : "NingÃºn Short seleccionado"}
+                  : "Ningún Short seleccionado"}
               </strong>
 
               <span>
-                Cada video se subirÃ¡ y quedarÃ¡
-                programado automÃ¡ticamente.
+                Cada video se subirá y quedará
+                programado automáticamente.
               </span>
             </>
           )}
@@ -694,9 +694,11 @@ export default function Home() {
         >
           {uploading
             ? `SUBIENDO ${current}/${files.length}...`
-            : "ðŸš€ SUBIR Y PROGRAMAR TODO"}
+            : "?? SUBIR Y PROGRAMAR TODO"}
         </button>
       </div>
     </main>
   );
 }
+
+

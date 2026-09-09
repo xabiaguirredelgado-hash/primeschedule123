@@ -1,4 +1,4 @@
-﻿import { stripe } from "../stripe";
+import { stripe } from "../stripe";
 import config from '../../lib/config';
 import { UserService } from "./user";
 
@@ -46,4 +46,6 @@ export const BillingService = {
     return { success: false };
   }
 };
+
+
 

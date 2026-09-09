@@ -1,4 +1,4 @@
-﻿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { getTokensFromCode, saveTokens } from "../../../../lib/youtube/client";
 
@@ -38,3 +38,5 @@ export async function GET(request) {
     return NextResponse.redirect(errorUrl);
   }
 }
+
+

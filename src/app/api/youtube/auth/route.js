@@ -1,4 +1,4 @@
-﻿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { getAuthUrl } from "../../../../lib/youtube/client";
 import { cookies } from "next/headers";
 
@@ -18,6 +18,8 @@ export async function GET() {
     return NextResponse.redirect(authUrl);
   } catch (error) {
     console.error("Error en /api/youtube/auth:", error);
-    return NextResponse.json({ error: "Error al iniciar la autenticación" }, { status: 500 });
+    return NextResponse.json({ error: "Error al iniciar la autenticaci�n" }, { status: 500 });
   }
 }
+
+

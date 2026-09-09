@@ -1,4 +1,4 @@
-ï»¿// src/app/api/youtube/upload/route.js
+// src/app/api/youtube/upload/route.js
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
@@ -10,7 +10,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(request) {
   try {
-    // 1. Verificar sesiÃ³n del usuario
+    // 1. Verificar sesión del usuario
     const session = await getServerSession(authOptions);
     if (!session || !session.user) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
@@ -34,7 +34,7 @@ export async function POST(request) {
 
     if (!account || !account.access_token) {
       return NextResponse.json(
-        { error: 'Cuenta de YouTube no vinculada. ConÃ©ctate primero.' },
+        { error: 'Cuenta de YouTube no vinculada. Conéctate primero.' },
         { status: 400 }
       );
     }
@@ -66,7 +66,7 @@ export async function POST(request) {
 
     if (!file) {
       return NextResponse.json(
-        { error: 'No se proporcionÃ³ ningÃºn archivo de video' },
+        { error: 'No se proporcionó ningún archivo de video' },
         { status: 400 }
       );
     }
@@ -107,6 +107,8 @@ export async function POST(request) {
     );
   }
 }
+
+
 
 
 

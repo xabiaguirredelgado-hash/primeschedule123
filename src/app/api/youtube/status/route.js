@@ -1,4 +1,4 @@
-﻿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { getTokens } from "../../../../lib/youtube/client";
 
 export async function GET() {
@@ -20,3 +20,5 @@ export async function GET() {
     return NextResponse.json({ connected: false, error: error.message }, { status: 500 });
   }
 }
+
+

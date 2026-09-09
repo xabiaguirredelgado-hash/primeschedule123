@@ -1,4 +1,4 @@
-﻿import { NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getOAuthClient, saveOAuthState } from '@/lib/youtube/client';
 
 export async function GET() {
@@ -14,4 +14,6 @@ export async function GET() {
   
   return NextResponse.redirect(url);
 }
+
+
 

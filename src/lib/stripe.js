@@ -1,4 +1,4 @@
-﻿import Stripe from "stripe";
+import Stripe from "stripe";
 import config from '../lib/config';
 
 const apiKey = config.stripe.secretKey && config.stripe.secretKey.trim() !== ""
@@ -8,4 +8,6 @@ const apiKey = config.stripe.secretKey && config.stripe.secretKey.trim() !== ""
 export const stripe = new Stripe(apiKey, {
   apiVersion: "2023-10-16",
 });
+
+
 

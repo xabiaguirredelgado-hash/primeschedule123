@@ -1,4 +1,4 @@
-ï»¿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { getValidAccessToken, uploadVideoToYouTube } from "../../../../lib/youtube/client";
 import { writeFile, unlink } from "fs/promises";
 import { join } from "path";
@@ -9,7 +9,7 @@ export async function POST(request) {
   try {
     const accessToken = await getValidAccessToken();
     if (!accessToken) {
-      return NextResponse.json({ error: "YouTube no estÃ¡ conectado. ConÃ©ctate primero." }, { status: 400 });
+      return NextResponse.json({ error: "YouTube no está conectado. Conéctate primero." }, { status: 400 });
     }
 
     const formData = await request.formData();
@@ -20,7 +20,7 @@ export async function POST(request) {
     const publishAt = formData.get("publishAt") || undefined;
 
     if (!file) {
-      return NextResponse.json({ error: "No se proporcionÃ³ ningÃºn archivo de video" }, { status: 400 });
+      return NextResponse.json({ error: "No se proporcionó ningún archivo de video" }, { status: 400 });
     }
 
     const bytes = await file.arrayBuffer();
@@ -51,3 +51,5 @@ export async function POST(request) {
     return NextResponse.json({ error: error.message || "Error interno al subir el video" }, { status: 500 });
   }
 }
+
+

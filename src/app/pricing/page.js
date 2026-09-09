@@ -1,9 +1,9 @@
-﻿"use client";
+"use client";
 
 import { useSession } from "next-auth/react";
 import { useState } from "react";
-import Navbar from './/components/Navbar';
-import Footer from './/components/Footer';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import { FaCheck, FaInfoCircle } from "react-icons/fa";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
@@ -54,7 +54,7 @@ export default function Pricing() {
           </div>
           <h1 className="text-3xl sm:text-4xl font-black tracking-tight uppercase">Buy Credits Packs</h1>
           <p className="text-xs sm:text-sm text-secondary-text max-w-lg leading-relaxed">
-            Purchase flexible credit packages to perform high-resolution predictions. Keep all profits — we handle AI infrastructure.
+            Purchase flexible credit packages to perform high-resolution predictions. Keep all profits � we handle AI infrastructure.
           </p>
         </div>
 
@@ -119,4 +119,6 @@ export default function Pricing() {
     </div>
   );
 }
+
+
 

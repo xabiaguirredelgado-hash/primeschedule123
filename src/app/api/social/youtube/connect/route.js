@@ -1,6 +1,6 @@
-﻿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from './/lib/auth';
+import { authOptions } from '@/lib/auth';
 import config from '../../../../../lib/config';
 
 export async function POST(req) {
@@ -43,6 +43,8 @@ export async function POST(req) {
     return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });
   }
 }
+
+
 
 
 

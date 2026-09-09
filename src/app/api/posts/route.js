@@ -1,8 +1,8 @@
-﻿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from './/lib/auth';
-import { prisma } from './/lib/prisma';
-import { UserService } from './/lib/services/user';
+import { authOptions } from '@/lib/auth';
+import { prisma } from '@/lib/prisma';
+import { UserService } from '@/lib/services/user';
 import config from '../../../lib/config';
 
 // Helper function to call the MuAPI publishing endpoints
@@ -301,6 +301,8 @@ export async function POST(req) {
     return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });
   }
 }
+
+
 
 
 

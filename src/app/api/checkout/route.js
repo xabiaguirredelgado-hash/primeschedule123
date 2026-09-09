@@ -1,7 +1,7 @@
-﻿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from './/lib/auth';
-import { BillingService } from './/lib/services/billing';
+import { authOptions } from '@/lib/auth';
+import { BillingService } from '@/lib/services/billing';
 
 export async function POST(req) {
   try {
@@ -22,4 +22,6 @@ export async function POST(req) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+
+
 
