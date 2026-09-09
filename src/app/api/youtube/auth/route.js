@@ -18,7 +18,7 @@ export async function GET() {
     return NextResponse.redirect(authUrl);
   } catch (error) {
     console.error("Error en /api/youtube/auth:", error);
-    return NextResponse.json({ error: "Error al iniciar la autenticación" }, { status: 500 });
+    return NextResponse.json({ error: "Error al iniciar la autenticaciÃ³n" }, { status: 500 });
   }
 }
 
