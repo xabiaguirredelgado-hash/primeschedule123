@@ -78,3 +78,9 @@ model ScheduledPost {
   updatedAt     DateTime  @updatedAt
   user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+model PlatformToken {
+  id        String   @id @default(cuid())
+  platform  String   @unique // "youtube" | "tiktok" | "meta"
+  data      Json
+  updatedAt DateTime @updatedAt
+}
