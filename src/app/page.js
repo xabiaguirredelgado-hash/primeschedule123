@@ -28,10 +28,11 @@ export default function Home() {
   const [madeForKids, setMadeForKids] = useState(false);
 
   const [connected, setConnected] = useState(false);
-    const [tiktokConnected, setTiktokConnected] = useState(false);
+  const [channel, setChannel] = useState(null);
+
+  const [tiktokConnected, setTiktokConnected] = useState(false);
   const [metaConnected, setMetaConnected] = useState(false);
   const [metaInfo, setMetaInfo] = useState(null);
-  const [channel, setChannel] = useState(null);
 
   const [uploading, setUploading] = useState(false);
   const [current, setCurrent] = useState(0);
@@ -50,27 +51,50 @@ export default function Home() {
     setDate(`${yyyy}-${mm}-${dd}`);
 
     checkYouTube();
-        checkTikTok();  
-    checkMeta();    
+    checkTikTok();
+    checkMeta();
   }, []);
 
   async function checkYouTube() {
     try {
-      const response = await fetch(
-        "/api/youtube/status"
-      );
-
+      const response = await fetch("/api/youtube/status");
       const data = await response.json();
-
       setConnected(!!data.connected);
       setChannel(data.channel || null);
     } catch {}
   }
 
+  async function checkTikTok() {
+    try {
+      const response = await fetch("/api/tiktok/status");
+      const data = await response.json();
+      setTiktokConnected(!!data.connected);
+    } catch {}
+  }
+
+  async function checkMeta() {
+    try {
+      const response = await fetch("/api/meta/status");
+      const data = await response.json();
+      setMetaConnected(!!data.connected);
+      setMetaInfo(data);
+    } catch {}
+  }
+
+  function connectYouTube() {
+    window.location.href = "/api/youtube/auth";
+  }
+
+  function connectTikTok() {
+    window.location.href = "/api/tiktok/auth";
+  }
+
+  function connectMeta() {
+    window.location.href = "/api/meta/auth";
+  }
+
   function handleFiles(event) {
-    const selected = Array.from(
-      event.target.files || []
-    ).filter((file) =>
+    const selected = Array.from(event.target.files || []).filter((file) =>
       file.type.startsWith("video/")
     );
 
@@ -80,9 +104,7 @@ export default function Home() {
   }
 
   function removeFile(index) {
-    setFiles((current) =>
-      current.filter((_, i) => i !== index)
-    );
+    setFiles((current) => current.filter((_, i) => i !== index));
   }
 
   function moveFile(index, direction) {
@@ -90,17 +112,11 @@ export default function Home() {
       const copy = [...current];
       const target = index + direction;
 
-      if (
-        target < 0 ||
-        target >= copy.length
-      ) {
+      if (target < 0 || target >= copy.length) {
         return current;
       }
 
-      [copy[index], copy[target]] = [
-        copy[target],
-        copy[index],
-      ];
+      [copy[index], copy[target]] = [copy[target], copy[index]];
 
       return copy;
     });
@@ -109,24 +125,14 @@ export default function Home() {
   const schedule = useMemo(() => {
     if (!date || !time) return [];
 
-    const start = new Date(
-      `${date}T${time}`
-    );
+    const start = new Date(`${date}T${time}`);
 
     return files.map((file, index) => ({
       file,
       index,
-      date: new Date(
-        start.getTime() +
-          index * Number(interval) * 60 * 1000
-      ),
+      date: new Date(start.getTime() + index * Number(interval) * 60 * 1000),
     }));
   }, [files, date, time, interval]);
-
-  async function connectYouTube() {
-    window.location.href =
-      "/api/youtube/auth";
-  }
 
   async function uploadAll() {
     if (!files.length) {
@@ -135,21 +141,14 @@ export default function Home() {
     }
 
     if (!connected) {
-      setError(
-        "Primero conecta tu canal de YouTube."
-      );
+      setError("Primero conecta tu canal de YouTube.");
       return;
     }
 
     const firstDate = schedule[0]?.date;
 
-    if (
-      !firstDate ||
-      firstDate.getTime() <= Date.now()
-    ) {
-      setError(
-        "La primera publicación debe estar en el futuro."
-      );
+    if (!firstDate || firstDate.getTime() <= Date.now()) {
+      setError("La primera publicación debe estar en el futuro.");
       return;
     }
 
@@ -168,43 +167,22 @@ export default function Home() {
       const formData = new FormData();
 
       formData.append("file", item.file);
-      formData.append(
-        "title",
-        filenameToTitle(item.file.name)
-      );
-      formData.append(
-        "description",
-        description
-      );
-      formData.append(
-        "publishAt",
-        item.date.toISOString()
-      );
-      formData.append(
-        "categoryId",
-        categoryId
-      );
-      formData.append(
-        "madeForKids",
-        String(madeForKids)
-      );
+      formData.append("title", filenameToTitle(item.file.name));
+      formData.append("description", description);
+      formData.append("publishAt", item.date.toISOString());
+      formData.append("categoryId", categoryId);
+      formData.append("madeForKids", String(madeForKids));
 
       try {
-        const response = await fetch(
-          "/api/youtube/upload",
-          {
-            method: "POST",
-            body: formData,
-          }
-        );
+        const response = await fetch("/api/youtube/upload", {
+          method: "POST",
+          body: formData,
+        });
 
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(
-            data.error ||
-              "Error desconocido"
-          );
+          throw new Error(data.error || "Error desconocido");
         }
 
         newResults.push({
@@ -217,10 +195,7 @@ export default function Home() {
         newResults.push({
           file: item.file.name,
           success: false,
-          error:
-            err instanceof Error
-              ? err.message
-              : "Error",
+          error: err instanceof Error ? err.message : "Error",
           publishAt: item.date,
         });
       }
@@ -239,13 +214,11 @@ export default function Home() {
 
           <div>
             <strong>PrimeScheduler</strong>
-            <span>
-              YouTube Shorts Scheduler
-            </span>
+            <span>YouTube Shorts Scheduler</span>
           </div>
         </div>
 
-<div className="connection" style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+        <div className="connection" style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
           {connected ? (
             <div className="connected">
               <span className="dot" />
@@ -284,9 +257,7 @@ export default function Home() {
 
       <section className="hero">
         <div>
-          <div className="eyebrow">
-            PRIMECLIPSNXT
-          </div>
+          <div className="eyebrow">PRIMECLIPSNXT</div>
 
           <h1>
             Programa tus Shorts
@@ -295,8 +266,7 @@ export default function Home() {
           </h1>
 
           <p>
-            Selecciona tus 30–50 Shorts,
-            elige la hora inicial y deja que
+            Selecciona tus 30–50 Shorts, elige la hora inicial y deja que
             PrimeScheduler haga el resto.
           </p>
         </div>
@@ -313,10 +283,7 @@ export default function Home() {
             <span>01</span>
             <div>
               <h2>Selecciona tus Shorts</h2>
-              <p>
-                Puedes seleccionar todos los
-                MP4 de una sola vez.
-              </p>
+              <p>Puedes seleccionar todos los MP4 de una sola vez.</p>
             </div>
           </div>
 
@@ -328,86 +295,43 @@ export default function Home() {
               onChange={handleFiles}
             />
 
-            <div className="upload-icon">
-              ?
-            </div>
+            <div className="upload-icon">?</div>
 
-            <strong>
-              Seleccionar Shorts
-            </strong>
+            <strong>Seleccionar Shorts</strong>
 
-            <span>
-              MP4 / MOV · Selección múltiple
-            </span>
+            <span>MP4 / MOV · Selección múltiple</span>
           </label>
 
           {files.length > 0 && (
             <div className="file-list">
               <div className="file-list-header">
-                <strong>
-                  {files.length} videos
-                </strong>
+                <strong>{files.length} videos</strong>
 
-                <span>
-                  Arrastra mentalmente el orden
-                  usando las flechas
-                </span>
+                <span>Arrastra mentalmente el orden usando las flechas</span>
               </div>
 
               {files.map((file, index) => (
-                <div
-                  className="file-row"
-                  key={`${file.name}-${index}`}
-                >
-                  <div className="file-number">
-                    {index + 1}
-                  </div>
+                <div className="file-row" key={`${file.name}-${index}`}>
+                  <div className="file-number">{index + 1}</div>
 
                   <div className="file-info">
-                    <strong>
-                      {file.name}
-                    </strong>
-                    <span>
-                      {(
-                        file.size /
-                        1024 /
-                        1024
-                      ).toFixed(1)}{" "}
-                      MB
-                    </span>
+                    <strong>{file.name}</strong>
+                    <span>{(file.size / 1024 / 1024).toFixed(1)} MB</span>
                   </div>
 
                   <div className="file-actions">
-                    <button
-                      onClick={() =>
-                        moveFile(index, -1)
-                      }
-                      disabled={
-                        index === 0
-                      }
-                    >
+                    <button onClick={() => moveFile(index, -1)} disabled={index === 0}>
                       ?
                     </button>
 
                     <button
-                      onClick={() =>
-                        moveFile(index, 1)
-                      }
-                      disabled={
-                        index ===
-                        files.length - 1
-                      }
+                      onClick={() => moveFile(index, 1)}
+                      disabled={index === files.length - 1}
                     >
                       ?
                     </button>
 
-                    <button
-                      onClick={() =>
-                        removeFile(index)
-                      }
-                    >
-                      ×
-                    </button>
+                    <button onClick={() => removeFile(index)}>×</button>
                   </div>
                 </div>
               ))}
@@ -420,55 +344,31 @@ export default function Home() {
             <span>02</span>
             <div>
               <h2>Configuración</h2>
-              <p>
-                Define cuándo quieres que
-                aparezcan.
-              </p>
+              <p>Define cuándo quieres que aparezcan.</p>
             </div>
           </div>
 
           <div className="form-grid">
             <label>
               <span>Fecha</span>
-              <input
-                type="date"
-                value={date}
-                onChange={(e) =>
-                  setDate(e.target.value)
-                }
-              />
+              <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
             </label>
 
             <label>
               <span>Primera publicación</span>
-              <input
-                type="time"
-                value={time}
-                onChange={(e) =>
-                  setTime(e.target.value)
-                }
-              />
+              <input type="time" value={time} onChange={(e) => setTime(e.target.value)} />
             </label>
           </div>
 
           <label className="full-field">
-            <span>
-              Intervalo entre Shorts
-            </span>
+            <span>Intervalo entre Shorts</span>
 
             <div className="interval">
               <input
                 type="number"
                 min="1"
                 value={interval}
-                onChange={(e) =>
-                  setInterval(
-                    Math.max(
-                      1,
-                      Number(e.target.value)
-                    )
-                  )
-                }
+                onChange={(e) => setInterval(Math.max(1, Number(e.target.value)))}
               />
 
               <span>minutos</span>
@@ -476,47 +376,24 @@ export default function Home() {
           </label>
 
           <label className="full-field">
-            <span>
-              Descripción global
-            </span>
+            <span>Descripción global</span>
 
             <textarea
               placeholder="Descripción que tendrán tus Shorts..."
               value={description}
-              onChange={(e) =>
-                setDescription(
-                  e.target.value
-                )
-              }
+              onChange={(e) => setDescription(e.target.value)}
             />
           </label>
 
           <div className="form-grid">
             <label>
               <span>Categoría</span>
-              <select
-                value={categoryId}
-                onChange={(e) =>
-                  setCategoryId(
-                    e.target.value
-                  )
-                }
-              >
-                <option value="24">
-                  People & Blogs
-                </option>
-                <option value="22">
-                  People & Blogs
-                </option>
-                <option value="20">
-                  Gaming
-                </option>
-                <option value="23">
-                  Comedy
-                </option>
-                <option value="24">
-                  Entertainment
-                </option>
+              <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
+                <option value="24">People & Blogs</option>
+                <option value="22">People & Blogs</option>
+                <option value="20">Gaming</option>
+                <option value="23">Comedy</option>
+                <option value="24">Entertainment</option>
               </select>
             </label>
 
@@ -524,16 +401,10 @@ export default function Home() {
               <input
                 type="checkbox"
                 checked={madeForKids}
-                onChange={(e) =>
-                  setMadeForKids(
-                    e.target.checked
-                  )
-                }
+                onChange={(e) => setMadeForKids(e.target.checked)}
               />
 
-              <span>
-                Contenido creado para niños
-              </span>
+              <span>Contenido creado para niños</span>
             </label>
           </div>
         </section>
@@ -543,92 +414,57 @@ export default function Home() {
             <span>03</span>
             <div>
               <h2>Vista previa</h2>
-              <p>
-                Así quedará tu cola de
-                publicación.
-              </p>
+              <p>Así quedará tu cola de publicación.</p>
             </div>
           </div>
 
           {schedule.length === 0 ? (
             <div className="empty">
-              Selecciona tus Shorts para
-              generar la programación.
+              Selecciona tus Shorts para generar la programación.
             </div>
           ) : (
             <>
               <div className="schedule-summary">
                 <div>
-                  <strong>
-                    {schedule.length}
-                  </strong>
+                  <strong>{schedule.length}</strong>
                   <span>Shorts</span>
                 </div>
 
                 <div>
-                  <strong>
-                    {interval}
-                  </strong>
+                  <strong>{interval}</strong>
                   <span>minutos</span>
                 </div>
 
                 <div>
-                  <strong>
-                    {formatDate(
-                      schedule[0].date
-                    )}
-                  </strong>
+                  <strong>{formatDate(schedule[0].date)}</strong>
                   <span>primero</span>
                 </div>
 
                 <div>
-                  <strong>
-                    {formatDate(
-                      schedule[
-                        schedule.length - 1
-                      ].date
-                    )}
-                  </strong>
+                  <strong>{formatDate(schedule[schedule.length - 1].date)}</strong>
                   <span>último</span>
                 </div>
               </div>
 
               <div className="schedule-list">
-                {schedule
-                  .slice(0, 50)
-                  .map((item) => (
-                    <div
-                      className="schedule-row"
-                      key={`${item.index}-${item.file.name}`}
-                    >
-                      <div className="schedule-number">
-                        {String(
-                          item.index + 1
-                        ).padStart(2, "0")}
-                      </div>
-
-                      <div className="schedule-file">
-                        {item.file.name}
-                      </div>
-
-                      <time>
-                        {formatDate(
-                          item.date
-                        )}
-                      </time>
+                {schedule.slice(0, 50).map((item) => (
+                  <div className="schedule-row" key={`${item.index}-${item.file.name}`}>
+                    <div className="schedule-number">
+                      {String(item.index + 1).padStart(2, "0")}
                     </div>
-                  ))}
+
+                    <div className="schedule-file">{item.file.name}</div>
+
+                    <time>{formatDate(item.date)}</time>
+                  </div>
+                ))}
               </div>
             </>
           )}
         </section>
       </div>
 
-      {error && (
-        <div className="error-box">
-          {error}
-        </div>
-      )}
+      {error && <div className="error-box">{error}</div>}
 
       {results.length > 0 && (
         <section className="results">
@@ -636,29 +472,17 @@ export default function Home() {
 
           {results.map((result, index) => (
             <div
-              className={
-                result.success
-                  ? "result success"
-                  : "result failed"
-              }
+              className={result.success ? "result success" : "result failed"}
               key={`${result.file}-${index}`}
             >
-              <span>
-                {result.success
-                  ? "?"
-                  : "!"}
-              </span>
+              <span>{result.success ? "?" : "!"}</span>
 
               <div>
-                <strong>
-                  {result.file}
-                </strong>
+                <strong>{result.file}</strong>
 
                 <small>
                   {result.success
-                    ? `Programado para ${formatDate(
-                        result.publishAt
-                      )}`
+                    ? `Programado para ${formatDate(result.publishAt)}`
                     : result.error}
                 </small>
               </div>
@@ -672,21 +496,13 @@ export default function Home() {
           {uploading ? (
             <>
               <strong>
-                Subiendo {current} de{" "}
-                {files.length}
+                Subiendo {current} de {files.length}
               </strong>
 
               <div className="progress">
                 <div
                   style={{
-                    width: `${
-                      (current /
-                        Math.max(
-                          files.length,
-                          1
-                        )) *
-                      100
-                    }%`,
+                    width: `${(current / Math.max(files.length, 1)) * 100}%`,
                   }}
                 />
               </div>
@@ -694,15 +510,10 @@ export default function Home() {
           ) : (
             <>
               <strong>
-                {files.length
-                  ? `${files.length} Shorts listos`
-                  : "Ningún Short seleccionado"}
+                {files.length ? `${files.length} Shorts listos` : "Ningún Short seleccionado"}
               </strong>
 
-              <span>
-                Cada video se subirá y quedará
-                programado automáticamente.
-              </span>
+              <span>Cada video se subirá y quedará programado automáticamente.</span>
             </>
           )}
         </div>
@@ -710,15 +521,9 @@ export default function Home() {
         <button
           className="main-button"
           onClick={uploadAll}
-          disabled={
-            uploading ||
-            !files.length ||
-            !connected
-          }
+          disabled={uploading || !files.length || !connected}
         >
-          {uploading
-            ? `SUBIENDO ${current}/${files.length}...`
-            : "?? SUBIR Y PROGRAMAR TODO"}
+          {uploading ? `SUBIENDO ${current}/${files.length}...` : "SUBIR Y PROGRAMAR TODO"}
         </button>
       </div>
     </main>
