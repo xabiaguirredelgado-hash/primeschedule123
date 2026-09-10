@@ -28,6 +28,9 @@ export default function Home() {
   const [madeForKids, setMadeForKids] = useState(false);
 
   const [connected, setConnected] = useState(false);
+    const [tiktokConnected, setTiktokConnected] = useState(false);
+  const [metaConnected, setMetaConnected] = useState(false);
+  const [metaInfo, setMetaInfo] = useState(null);
   const [channel, setChannel] = useState(null);
 
   const [uploading, setUploading] = useState(false);
@@ -47,6 +50,8 @@ export default function Home() {
     setDate(`${yyyy}-${mm}-${dd}`);
 
     checkYouTube();
+        checkTikTok();  
+    checkMeta();    
   }, []);
 
   async function checkYouTube() {
@@ -240,19 +245,38 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="connection">
+<div className="connection" style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
           {connected ? (
             <div className="connected">
               <span className="dot" />
-              {channel?.title ||
-                "YouTube conectado"}
+              YouTube: {channel?.title || "conectado"}
             </div>
           ) : (
-            <button
-              className="google-button"
-              onClick={connectYouTube}
-            >
+            <button className="google-button" onClick={connectYouTube}>
               Conectar YouTube
+            </button>
+          )}
+
+          {tiktokConnected ? (
+            <div className="connected">
+              <span className="dot" />
+              TikTok conectado
+            </div>
+          ) : (
+            <button className="google-button" onClick={connectTikTok}>
+              Conectar TikTok
+            </button>
+          )}
+
+          {metaConnected ? (
+            <div className="connected">
+              <span className="dot" />
+              {metaInfo?.pageName || "Meta conectado"}
+              {metaInfo?.hasInstagram ? " (IG + FB)" : " (solo FB)"}
+            </div>
+          ) : (
+            <button className="google-button" onClick={connectMeta}>
+              Conectar Instagram / Facebook
             </button>
           )}
         </div>
