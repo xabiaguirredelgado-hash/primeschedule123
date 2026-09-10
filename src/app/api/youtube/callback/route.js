@@ -1,6 +1,8 @@
-﻿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { getTokensFromCode, saveTokens } from "../../../../lib/youtube/client";
+
+const BASE_URL = process.env.NEXTAUTH_URL || "http://localhost:3000";
 
 export async function GET(request) {
   try {
@@ -10,7 +12,7 @@ export async function GET(request) {
     const error = searchParams.get("error");
 
     if (error) {
-      const errorUrl = new URL("/", request.url);
+      const errorUrl = new URL("/", BASE_URL);
       errorUrl.searchParams.set("youtube_error", error);
       return NextResponse.redirect(errorUrl);
     }
@@ -19,7 +21,7 @@ export async function GET(request) {
     const savedState = cookieStore.get("youtube_oauth_state")?.value;
 
     if (!code || !state || !savedState || state !== savedState) {
-      const errorUrl = new URL("/", request.url);
+      const errorUrl = new URL("/", BASE_URL);
       errorUrl.searchParams.set("youtube_error", "invalid_state");
       return NextResponse.redirect(errorUrl);
     }
@@ -28,15 +30,13 @@ export async function GET(request) {
     await saveTokens(tokens);
     cookieStore.delete("youtube_oauth_state");
 
-    const successUrl = new URL("/", request.url);
+    const successUrl = new URL("/", BASE_URL);
     successUrl.searchParams.set("youtube_connected", "true");
     return NextResponse.redirect(successUrl);
   } catch (error) {
     console.error("Error en callback:", error);
-    const errorUrl = new URL("/", request.url);
+    const errorUrl = new URL("/", BASE_URL);
     errorUrl.searchParams.set("youtube_error", "callback_failed");
     return NextResponse.redirect(errorUrl);
   }
 }
-
-
