@@ -2,10 +2,7 @@
 import { google } from "googleapis";
 import { createReadStream } from "fs";
 import { randomBytes } from "crypto";
-import fs from "fs";
-import path from "path";
-
-const TOKEN_FILE = path.join(process.cwd(), ".youtube-token.json");
+import { prisma } from "@/lib/prisma";
 
 const oauth2Client = new google.auth.OAuth2(
   process.env.YOUTUBE_CLIENT_ID,
@@ -47,21 +44,21 @@ export async function refreshAccessToken(refreshToken) {
   };
 }
 
-export function saveTokens(tokens) {
-  fs.writeFileSync(TOKEN_FILE, JSON.stringify(tokens, null, 2), "utf8");
+export async function saveTokens(tokens) {
+  await prisma.platformToken.upsert({
+    where: { platform: "youtube" },
+    update: { data: tokens },
+    create: { platform: "youtube", data: tokens },
+  });
 }
 
-export function getTokens() {
-  try {
-    if (!fs.existsSync(TOKEN_FILE)) return null;
-    return JSON.parse(fs.readFileSync(TOKEN_FILE, "utf8"));
-  } catch {
-    return null;
-  }
+export async function getTokens() {
+  const record = await prisma.platformToken.findUnique({ where: { platform: "youtube" } });
+  return record ? record.data : null;
 }
 
 export async function getValidAccessToken() {
-  const tokens = getTokens();
+  const tokens = await getTokens();
   if (!tokens) return null;
 
   const isExpired = tokens.expiry_date ? tokens.expiry_date < Date.now() : true;
@@ -69,7 +66,7 @@ export async function getValidAccessToken() {
   if (!tokens.refresh_token) return null;
 
   const refreshed = await refreshAccessToken(tokens.refresh_token);
-  saveTokens({ ...tokens, ...refreshed });
+  await saveTokens({ ...tokens, ...refreshed });
   return refreshed.access_token;
 }
 
@@ -97,5 +94,3 @@ export async function uploadVideoToYouTube({
 
   return response.data.id;
 }
-
-

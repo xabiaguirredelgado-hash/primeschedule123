@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { getTokensFromCode, saveTokens } from "../../../../lib/youtube/client";
 
@@ -25,7 +25,7 @@ export async function GET(request) {
     }
 
     const tokens = await getTokensFromCode(code);
-    saveTokens(tokens);
+    await saveTokens(tokens);
     cookieStore.delete("youtube_oauth_state");
 
     const successUrl = new URL("/", request.url);

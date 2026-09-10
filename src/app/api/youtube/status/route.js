@@ -1,9 +1,9 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import { getTokens } from "../../../../lib/youtube/client";
 
 export async function GET() {
   try {
-    const tokens = getTokens();
+    const tokens = await getTokens();
     if (!tokens || !tokens.access_token) {
       return NextResponse.json({ connected: false });
     }
