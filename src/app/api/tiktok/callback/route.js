@@ -10,14 +10,14 @@ export async function GET(request) {
   const error = searchParams.get("error");
 
   if (error) {
-    return NextResponse.redirect(new URL(`/dashboard?tiktok_error=${error}`, BASE_URL));
+    return NextResponse.redirect(new URL(`/?tiktok_error=${error}`, BASE_URL));
   }
 
   try {
     const tokens = await getTokensFromCode(code);
     await saveTokens(tokens);
-    return NextResponse.redirect(new URL("/dashboard?connected=tiktok", BASE_URL));
+    return NextResponse.redirect(new URL("/?tiktok_connected=true", BASE_URL));
   } catch (err) {
-    return NextResponse.redirect(new URL(`/dashboard?tiktok_error=${err.message}`, BASE_URL));
+    return NextResponse.redirect(new URL(`/?tiktok_error=${err.message}`, BASE_URL));
   }
 }

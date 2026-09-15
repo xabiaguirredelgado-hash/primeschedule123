@@ -16,7 +16,7 @@ export async function GET(request) {
   const error = searchParams.get("error");
 
   if (error) {
-    return NextResponse.redirect(new URL(`/dashboard?meta_error=${error}`, BASE_URL));
+    return NextResponse.redirect(new URL(`/?meta_error=${error}`, BASE_URL));
   }
 
   try {
@@ -25,7 +25,7 @@ export async function GET(request) {
 
     const pages = await getManagedPages(tokens.access_token);
     if (pages.length === 0) {
-      return NextResponse.redirect(new URL("/dashboard?meta_error=no_pages_found", BASE_URL));
+      return NextResponse.redirect(new URL("/?meta_error=no_pages_found", BASE_URL));
     }
 
     const page = pages[0];
@@ -38,8 +38,8 @@ export async function GET(request) {
       igUserId,
     });
 
-    return NextResponse.redirect(new URL("/dashboard?connected=meta", BASE_URL));
+    return NextResponse.redirect(new URL("/?meta_connected=true", BASE_URL));
   } catch (err) {
-    return NextResponse.redirect(new URL(`/dashboard?meta_error=${err.message}`, BASE_URL));
+    return NextResponse.redirect(new URL(`/?meta_error=${err.message}`, BASE_URL));
   }
 }
