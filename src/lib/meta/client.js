@@ -10,9 +10,10 @@ const APP_SECRET = process.env.META_APP_SECRET;
 const REDIRECT_URI = process.env.META_REDIRECT_URI;
 
 const SCOPES = [
-  "instagram_business_content_publish",
-  "pages_manage_posts",
+  "instagram_basic",
+  "instagram_content_publishing",
   "pages_read_engagement",
+  "business_management",
   "pages_show_list",
 ];
 
