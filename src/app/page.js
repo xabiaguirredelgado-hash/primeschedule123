@@ -34,6 +34,12 @@ export default function Home() {
   const [metaConnected, setMetaConnected] = useState(false);
   const [metaInfo, setMetaInfo] = useState(null);
 
+  const [selectedPlatforms, setSelectedPlatforms] = useState({
+    tiktok: false,
+    instagram: false,
+    facebook: false,
+  });
+
   const [uploading, setUploading] = useState(false);
   const [current, setCurrent] = useState(0);
   const [results, setResults] = useState([]);
@@ -93,6 +99,10 @@ export default function Home() {
     window.location.href = "/api/meta/auth";
   }
 
+  function togglePlatform(platform) {
+    setSelectedPlatforms((prev) => ({ ...prev, [platform]: !prev[platform] }));
+  }
+
   function handleFiles(event) {
     const selected = Array.from(event.target.files || []).filter((file) =>
       file.type.startsWith("video/")
@@ -134,14 +144,41 @@ export default function Home() {
     }));
   }, [files, date, time, interval]);
 
+  const anyOtherPlatformSelected = Object.values(selectedPlatforms).some(Boolean);
+
+  async function scheduleOtherPlatforms() {
+    const platforms = Object.entries(selectedPlatforms)
+      .filter(([, checked]) => checked)
+      .map(([name]) => name);
+
+    if (platforms.length === 0) return;
+
+    for (let i = 0; i < schedule.length; i++) {
+      const item = schedule[i];
+      const formData = new FormData();
+
+      formData.append("file", item.file);
+      formData.append("title", filenameToTitle(item.file.name));
+      formData.append("caption", description);
+      formData.append("scheduledAt", item.date.toISOString());
+      formData.append("platforms", JSON.stringify(platforms));
+
+      try {
+        await fetch("/api/schedule", { method: "POST", body: formData });
+      } catch (err) {
+        console.error("Error programando en otras plataformas:", err);
+      }
+    }
+  }
+
   async function uploadAll() {
     if (!files.length) {
       setError("Selecciona tus Shorts primero.");
       return;
     }
 
-    if (!connected) {
-      setError("Primero conecta tu canal de YouTube.");
+    if (!connected && !anyOtherPlatformSelected) {
+      setError("Conecta al menos una plataforma (YouTube, TikTok, Instagram o Facebook).");
       return;
     }
 
@@ -152,10 +189,28 @@ export default function Home() {
       return;
     }
 
+    setError("");
+
+    // Programa en TikTok/Instagram/Facebook (si hay alguno marcado) antes de
+    // empezar con el flujo de YouTube, que se muestra con barra de progreso.
+    await scheduleOtherPlatforms();
+
+    if (!connected) {
+      // No hay YouTube conectado, pero ya programamos en las otras plataformas.
+      setResults(
+        schedule.map((item) => ({
+          file: item.file.name,
+          success: true,
+          publishAt: item.date,
+          note: "Programado en las plataformas seleccionadas.",
+        }))
+      );
+      return;
+    }
+
     setUploading(true);
     setCurrent(0);
     setResults([]);
-    setError("");
 
     const newResults = [];
 
@@ -385,6 +440,41 @@ export default function Home() {
             />
           </label>
 
+          <div className="full-field">
+            <span>Publicar también en</span>
+            <div style={{ display: "flex", gap: "16px", marginTop: "8px", flexWrap: "wrap" }}>
+              <label style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                <input
+                  type="checkbox"
+                  checked={selectedPlatforms.tiktok}
+                  onChange={() => togglePlatform("tiktok")}
+                  disabled={!tiktokConnected}
+                />
+                <span>TikTok {!tiktokConnected && "(conecta primero)"}</span>
+              </label>
+
+              <label style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                <input
+                  type="checkbox"
+                  checked={selectedPlatforms.instagram}
+                  onChange={() => togglePlatform("instagram")}
+                  disabled={!metaInfo?.hasInstagram}
+                />
+                <span>Instagram {!metaInfo?.hasInstagram && "(conecta primero)"}</span>
+              </label>
+
+              <label style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                <input
+                  type="checkbox"
+                  checked={selectedPlatforms.facebook}
+                  onChange={() => togglePlatform("facebook")}
+                  disabled={!metaConnected}
+                />
+                <span>Facebook {!metaConnected && "(conecta primero)"}</span>
+              </label>
+            </div>
+          </div>
+
           <div className="form-grid">
             <label>
               <span>Categoría</span>
@@ -482,7 +572,7 @@ export default function Home() {
 
                 <small>
                   {result.success
-                    ? `Programado para ${formatDate(result.publishAt)}`
+                    ? result.note || `Programado para ${formatDate(result.publishAt)}`
                     : result.error}
                 </small>
               </div>
@@ -521,7 +611,7 @@ export default function Home() {
         <button
           className="main-button"
           onClick={uploadAll}
-          disabled={uploading || !files.length || !connected}
+          disabled={uploading || !files.length || (!connected && !anyOtherPlatformSelected)}
         >
           {uploading ? `SUBIENDO ${current}/${files.length}...` : "SUBIR Y PROGRAMAR TODO"}
         </button>
@@ -529,5 +619,3 @@ export default function Home() {
     </main>
   );
 }
-
-
